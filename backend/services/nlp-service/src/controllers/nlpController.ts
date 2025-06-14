@@ -1,10 +1,14 @@
 import OpenAI from 'openai'
 import { logger } from '../utils/logger'
 
-// Configurar OpenAI client para usar OpenRouter
+// Configurar OpenAI client para usar OpenRouter con headers personalizados
 const openai = new OpenAI({
   apiKey: process.env.OPENROUTER_API_KEY,
   baseURL: process.env.OPENROUTER_BASE_URL || "https://openrouter.ai/api/v1",
+  defaultHeaders: {
+    "HTTP-Referer": process.env.OPENROUTER_HTTP_REFERER || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+    "X-Title": process.env.OPENROUTER_SITE_TITLE || "Komi - Pedidos con IA",
+  },
 })
 
 export interface FoodAnalysis {
@@ -45,7 +49,7 @@ export class NLPController {
   private model: string
 
   constructor() {
-    this.model = process.env.OPENROUTER_MODEL || 'anthropic/claude-3-haiku'
+    this.model = process.env.OPENROUTER_MODEL || 'nvidia/llama-3.3-nemotron-super-49b-v1:free'
   }
 
   /**
